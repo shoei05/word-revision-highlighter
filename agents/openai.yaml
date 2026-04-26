@@ -1,0 +1,4 @@
+interface:
+  display_name: "Word Revision Highlighter"
+  short_description: "Word変更履歴の修正箇所を蛍光ペンで一括マークする"
+  default_prompt: "Use $word-revision-highlighter to prepare a Word revision manuscript with highlighted changes."
