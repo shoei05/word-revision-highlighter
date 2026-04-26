@@ -4,85 +4,56 @@ Codex skill and helper script for Microsoft Word revision manuscripts that need 
 
 ## 日本語での使い方
 
-このスキルは、論文や投稿原稿の改訂版で「変更箇所を蛍光ペンで示してください」と求められたときに使います。
+このスキルは、論文や投稿原稿の改訂版で「変更箇所を蛍光ペンで示してください」と求められたときに、CodexやClaudeなどのAIエージェントへ作業を任せるためのものです。
 
-主に2つの場面を想定しています。
+ユーザーがWordの比較機能やVBAマクロを細かく覚える必要はありません。旧いファイルと新しいファイル、または変更履歴つきのWordファイルを指定して、AIエージェントに次のように頼んでください。エージェントが状況を判断し、変更履歴つき文書の作成、ハイライト用マクロの生成、Wordでの実行手順の提示まで代わりに進めます。
 
-1. 旧いWordファイルと新しいWordファイルから、変更履歴つき文書を作る。
-2. すでに変更履歴があるWordファイルから、挿入された本文をハイライトした提出用文書を作る。
+背景の考え方は、こちらの記事も参照してください: [修正箇所を蛍光ペンで一括マークする](https://plaza.umin.ac.jp/shoei05/index.php/2023/04/23/2342/)
 
-### 1. 旧いファイルと新しいファイルから履歴を作る
+### こう指示してみてください
 
-変更履歴を記録していなかった場合でも、Wordの比較機能を使うと、旧版と新版の差分から変更履歴つき文書を作れます。
-
-手順:
-
-1. Wordで旧いファイルまたは新しいファイルを開きます。
-2. Review > Compare > Compare Documents を選びます。
-3. Original document に旧いファイルを指定します。
-4. Revised document に新しいファイルを指定します。
-5. 比較結果として作られた文書を保存します。
-6. その比較結果の文書に対して、このスキルのハイライト用マクロを実行します。
-
-### 2. 履歴がある文書からハイライトを入れる
-
-すでにTrack Changes、つまり変更履歴が入っているWordファイルがある場合は、その文書を開いた状態でマクロを実行します。
-
-標準のマクロは次の処理をします。
-
-- 元ファイルを直接壊さないように、新しい文書を作る。
-- 既存のハイライトを消す。
-- 挿入された文字列を黄色でハイライトする。
-- 変更履歴を承認して、ハイライトだけが残る提出用文書にする。
-
-既存のハイライトを残したい場合、変更履歴も表示したままにしたい場合、削除箇所を赤い取り消し線で残したい場合は、下のオプションを使います。
-
-```bash
-python3 scripts/generate_macro.py --preserve-existing-highlights
-python3 scripts/generate_macro.py --keep-revisions
-python3 scripts/generate_macro.py --mark-deletions
-```
-
-### Codexへの指示例
-
-旧版と新版から比較文書を作りたい場合:
+旧いファイルと新しいファイルから、変更履歴を作ってハイライトしたい場合:
 
 ```text
 $word-revision-highlighter を使ってください。
-旧いファイルは old_manuscript.docx、新しいファイルは revised_manuscript.docx です。
-この2つからWordの比較機能で変更履歴つき文書を作り、その後、挿入箇所を黄色でハイライトする提出用ファイルを作る手順とVBAマクロをください。
+旧い原稿は old_manuscript.docx、新しい原稿は revised_manuscript.docx です。
+この2つを比較して変更履歴つき文書を作り、その変更履歴のうち挿入箇所を黄色でハイライトした提出用Wordファイルを作りたいです。
+必要な手順とVBAマクロを作ってください。
 ```
 
-すでに変更履歴つき文書がある場合:
+すでに変更履歴があるWordファイルから、ハイライト版を作りたい場合:
 
 ```text
 $word-revision-highlighter を使ってください。
 manuscript_with_track_changes.docx にはすでに変更履歴があります。
-挿入された本文を黄色でハイライトし、変更履歴は承認して、提出用のきれいな文書にしたいです。必要なVBAマクロとWordでの実行手順をください。
+挿入された本文を黄色でハイライトし、変更履歴は承認して、ハイライトだけが残る提出用のWordファイルを作りたいです。
+必要なVBAマクロとWordでの実行手順を作ってください。
 ```
 
-既存のハイライトを残したい場合:
+既存のハイライトを残したまま、今回の変更箇所だけ追加でハイライトしたい場合:
 
 ```text
 $word-revision-highlighter を使ってください。
-変更履歴つきのWordファイルがあります。既存のハイライトは消さずに、今回の挿入箇所だけを明るい緑で追加ハイライトするVBAマクロを作ってください。
+変更履歴つきWordファイルがあります。
+既存のハイライトは消さずに、今回挿入された箇所だけを明るい緑で追加ハイライトしたいです。
+VBAマクロと実行手順を作ってください。
 ```
 
-削除箇所も見えるようにしたい場合:
+削除箇所も見える形で残したい場合:
 
 ```text
 $word-revision-highlighter を使ってください。
-変更履歴つき文書から、挿入箇所は黄色ハイライト、削除箇所は本文に戻して赤い取り消し線で表示する提出用ファイルを作りたいです。VBAマクロと実行手順をください。
+変更履歴つきWordファイルから、挿入箇所は黄色ハイライト、削除箇所は本文に戻して赤い取り消し線で表示する提出用ファイルを作りたいです。
+VBAマクロと実行手順を作ってください。
 ```
 
-### Claudeへの指示例
+Claudeなど英語指示のほうが通しやすいエージェントには、次のように頼めます。
 
 ```text
 Use the word-revision-highlighter workflow.
 I have an old Word file named old_manuscript.docx and a revised Word file named revised_manuscript.docx.
-First, explain how to create a Track Changes document using Word's Compare Documents feature.
-Then generate a VBA macro that highlights inserted revisions in yellow and accepts the revisions in a new output document.
-Please provide the steps in Japanese.
+Create instructions for comparing them into a Track Changes document, then generate a VBA macro that highlights inserted revisions in yellow and accepts the revisions in a separate output document.
+Please explain the steps in Japanese.
 ```
 
 ```text
@@ -90,6 +61,27 @@ Use the word-revision-highlighter workflow.
 I already have a Word file with Track Changes.
 Generate a VBA macro that preserves existing highlights, marks inserted revisions with wdBrightGreen, and creates a separate output document.
 Please include Japanese instructions for running the macro in Word.
+```
+
+### バックエンドでは何をしているか
+
+AIエージェントは、だいたい次の流れで作業します。
+
+1. 旧いファイルと新しいファイルだけがある場合は、Wordの Review > Compare > Compare Documents を使って、旧版と新版の差分から変更履歴つき文書を作るよう案内します。
+2. 変更履歴つき文書がある場合は、`scripts/generate_macro.py` で用途に合ったVBAマクロを生成します。
+3. 生成されたマクロは、元ファイルを直接編集せず、アクティブなWord文書をもとに新しい文書を作ります。
+4. 新しい文書内の変更履歴を順番に見て、挿入された範囲だけを `wdYellow` などの指定色でハイライトします。
+5. 標準設定では、ハイライト後に変更履歴を承認し、提出しやすい見た目の文書にします。
+6. オプションで、既存ハイライトの保持、変更履歴を残したままの出力、削除箇所の赤い取り消し線表示にも対応します。
+
+内部で使うマクロ生成コマンドは次のような形です。
+
+```bash
+python3 scripts/generate_macro.py
+python3 scripts/generate_macro.py --preserve-existing-highlights
+python3 scripts/generate_macro.py --keep-revisions
+python3 scripts/generate_macro.py --mark-deletions
+python3 scripts/generate_macro.py --color wdBrightGreen
 ```
 
 The main workflow generates a VBA macro that:
